@@ -4,8 +4,7 @@ const fs = require("fs").promises;
 configDotenv();
 
 exports.getAuthToken = async () => {
-  const API_AUTH =
-    "https://gateway.blum.codes/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP";
+  const API_AUTH = "https://api.gumart.click/api/login";
 
   try {
     const data = await fs.readFile("configs/config.json", "utf-8");
@@ -14,9 +13,12 @@ exports.getAuthToken = async () => {
 
     for (const token of tokens) {
       try {
-        const response = await axios.post(API_AUTH, { query: token.token });
+        const response = await axios.post(API_AUTH, {
+          telegram_data: token.token,
+          ref_id: "",
+        });
 
-        const auth = response.data.token.refresh;
+        const auth = response.data.data.access_token;
         authToken.push({ token: auth });
       } catch (error) {
         console.log(
